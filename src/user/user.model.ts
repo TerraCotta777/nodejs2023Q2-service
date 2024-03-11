@@ -9,6 +9,8 @@ export class User {
   updatedAt: number;
 }
 
+export type UserForResponse = Omit<User, 'password'>;
+
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()

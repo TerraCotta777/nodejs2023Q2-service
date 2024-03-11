@@ -1,11 +1,15 @@
-import { IsUUID } from 'class-validator';
-import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
+import {
+  CreateUserDto,
+  UpdatePasswordDto,
+  UserForResponse,
+} from './user.model';
 import { UserService } from './user.service';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseUUIDPipe,
   Post,
@@ -19,19 +23,19 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getAllUsers(): Promise<User[]> {
+  getAllUsers(): Promise<UserForResponse[]> {
     return this.userService.getAllUsers();
   }
 
   @Get('/:id')
   @UsePipes(new ValidationPipe())
-  getUser(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
+  getUser(@Param('id', ParseUUIDPipe) id: string): Promise<UserForResponse> {
     return this.userService.getUser(id);
   }
 
   @Post()
   @UsePipes(new ValidationPipe())
-  createUser(@Body() dto: CreateUserDto): Promise<User> {
+  createUser(@Body() dto: CreateUserDto): Promise<UserForResponse> {
     return this.userService.createUser(dto);
   }
 
@@ -40,11 +44,12 @@ export class UserController {
   updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePasswordDto,
-  ): Promise<User> {
+  ): Promise<UserForResponse> {
     return this.userService.updateUser(id, dto);
   }
 
   @Delete('/:id')
+  @HttpCode(204)
   @UsePipes(new ValidationPipe())
   deleteUser(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.userService.deleteUser(id);

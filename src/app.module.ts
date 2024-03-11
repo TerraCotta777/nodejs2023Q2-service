@@ -9,7 +9,13 @@ import { TrackModule } from './track/track.module';
 import { AlbumModule } from './album/album.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule, ArtistModule, TrackModule, AlbumModule],
+  imports: [
+    ConfigModule.forRoot(),
+    UserModule,
+    ArtistModule,
+    TrackModule,
+    AlbumModule,
+  ],
   controllers: [AppController],
   providers: [AppService, DbService],
 })
