@@ -1,13 +1,4 @@
-import { DbService } from './db/db.service';
-import { Controller, Get } from '@nestjs/common';
-// import { AppService } from './app.service';
+import { Controller } from '@nestjs/common';
 
 @Controller()
-export class AppController {
-  constructor(private readonly dbService: DbService) {}
-
-  @Get()
-  getHello(): string {
-    return 'Hello World!';
-  }
-}
+export class AppController {}

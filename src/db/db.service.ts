@@ -10,12 +10,14 @@ import { Artist } from 'src/artist/artist.model';
 import { CreateTrackDto, Track } from 'src/track/track.model';
 import { CreateUserDto, UpdatePasswordDto, User } from 'src/user/user.model';
 import { v4 as uuidv4 } from 'uuid';
+import { Favorites } from 'src/favorites/favorites.model';
 
 interface DB {
   users: User[];
   artists: Artist[];
   tracks: Track[];
   albums: Album[];
+  favs: Favorites;
 }
 
 @Injectable()
@@ -25,6 +27,7 @@ export class DbService {
     artists: [],
     tracks: [],
     albums: [],
+    favs: { artists: [], albums: [], tracks: [] },
   };
 
   user = {
@@ -111,6 +114,12 @@ export class DbService {
 
     delete: (id: string) => {
       const artistIndex = this.artist.findArtistIndex(id);
+      this.db.tracks.map((track) => {
+        if (track.artistId === id) track.artistId = null;
+      });
+      this.db.albums.map((album) => {
+        if (album.artistId === id) album.artistId = null;
+      });
       this.db.artists.splice(artistIndex, 1);
       return;
     },
@@ -124,7 +133,7 @@ export class DbService {
     findTrackIndex: (id: string): number => {
       const index = this.db.tracks.findIndex((track) => track.id === id);
       if (index === -1) throw new NotFoundException();
-      return index;
+      else return index;
     },
 
     findById: (id: string) => {
@@ -191,8 +200,67 @@ export class DbService {
 
     delete: (id: string) => {
       const albumIndex = this.album.findAlbumIndex(id);
+      this.db.tracks.map((track) => {
+        if (track.albumId === id) track.albumId = null;
+      });
       this.db.albums.splice(albumIndex, 1);
       return;
+    },
+  };
+
+  fav = {
+    findAll: () => {
+      const tracks = this.db.favs.tracks
+        .map((trackId) => this.db.tracks.find((track) => track.id === trackId))
+        .filter((track) => track !== null && track !== undefined);
+      const albums = this.db.favs.albums
+        .map((albumId) => this.db.albums.find((album) => album.id === albumId))
+        .filter((album) => album !== null && album !== undefined);
+      const artists = this.db.favs.artists
+        .map((artistId) =>
+          this.db.artists.find((artist) => artist.id === artistId),
+        )
+        .filter((artist) => artist !== null && artist !== undefined);
+      return { tracks, albums, artists };
+    },
+
+    addTrack: (id: string) => {
+      this.track.findTrackIndex(id);
+      return this.db.favs.tracks.push(id);
+    },
+
+    removeTrack: (id: string) => {
+      const favTrackIndex = this.db.favs.tracks.findIndex(
+        (track) => track === id,
+      );
+      if (favTrackIndex === -1) throw new NotFoundException();
+      else this.db.favs.tracks.splice(favTrackIndex, 1);
+    },
+
+    addAlbum: (id: string) => {
+      this.album.findAlbumIndex(id);
+      return this.db.favs.albums.push(id);
+    },
+
+    removeAlbum: (id: string) => {
+      const favAlbumIndex = this.db.favs.albums.findIndex(
+        (album) => album === id,
+      );
+      if (favAlbumIndex === -1) throw new NotFoundException();
+      else this.db.favs.albums.splice(favAlbumIndex, 1);
+    },
+
+    addArtist: (id: string) => {
+      this.artist.findArtistIndex(id);
+      return this.db.favs.artists.push(id);
+    },
+
+    removeArtist: (id: string) => {
+      const favArtistIndex = this.db.favs.artists.findIndex(
+        (artist) => artist === id,
+      );
+      if (favArtistIndex === -1) throw new NotFoundException();
+      else this.db.favs.artists.splice(favArtistIndex, 1);
     },
   };
 }
