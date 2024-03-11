@@ -6,12 +6,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Artist } from 'src/artist/artist.model';
+import { CreateTrackDto, Track } from 'src/track/track.model';
 import { CreateUserDto, UpdatePasswordDto, User } from 'src/user/user.model';
 import { v4 as uuidv4 } from 'uuid';
 
 interface DB {
   users: User[];
   artists: Artist[];
+  tracks: Track[];
 }
 
 @Injectable()
@@ -19,6 +21,7 @@ export class DbService {
   private readonly db: DB = {
     users: [],
     artists: [],
+    tracks: [],
   };
 
   user = {
@@ -32,8 +35,8 @@ export class DbService {
       return index;
     },
 
-    findById: (userId: string) => {
-      const userIndex = this.user.findUserIndex(userId);
+    findById: (id: string) => {
+      const userIndex = this.user.findUserIndex(id);
       return this.db.users[userIndex];
     },
 
@@ -81,8 +84,8 @@ export class DbService {
       return index;
     },
 
-    findById: (userId: string) => {
-      const artistIndex = this.artist.findArtistIndex(userId);
+    findById: (id: string) => {
+      const artistIndex = this.artist.findArtistIndex(id);
       return this.db.artists[artistIndex];
     },
 
@@ -106,6 +109,46 @@ export class DbService {
     delete: (id: string) => {
       const artistIndex = this.artist.findArtistIndex(id);
       this.db.artists.splice(artistIndex, 1);
+      return;
+    },
+  };
+
+  track = {
+    findAll: () => {
+      return this.db.tracks;
+    },
+
+    findTrackIndex: (id: string): number => {
+      const index = this.db.tracks.findIndex((track) => track.id === id);
+      if (index === -1) throw new NotFoundException();
+      return index;
+    },
+
+    findById: (id: string) => {
+      const trackIndex = this.track.findTrackIndex(id);
+      return this.db.tracks[trackIndex];
+    },
+
+    create: (dto: CreateTrackDto) => {
+      const track = {
+        ...dto,
+        id: uuidv4(),
+      };
+      this.db.tracks.push(track);
+      return track;
+    },
+
+    update: (id: string, dto: CreateTrackDto) => {
+      const trackIndex = this.track.findTrackIndex(id);
+      let track = this.db.tracks[trackIndex];
+      track = { id: track.id, ...dto };
+      this.db.tracks[trackIndex] = track;
+      return track;
+    },
+
+    delete: (id: string) => {
+      const trackIndex = this.track.findTrackIndex(id);
+      this.db.tracks.splice(trackIndex, 1);
       return;
     },
   };
