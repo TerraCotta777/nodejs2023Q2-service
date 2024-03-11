@@ -18,19 +18,19 @@ export class UserService {
   };
 
   async getAllUsers(): Promise<UserForResponse[]> {
-    const users = this.dbService.findAllUsers();
+    const users = this.dbService.user.findAll();
     const usersToSend = [...users];
     return usersToSend.map((user) => this.deletePassword(user));
   }
 
   async getUser(id: string): Promise<UserForResponse> {
-    const user = this.dbService.findUser(id);
+    const user = this.dbService.user.findById(id);
     const userToSend = { ...user };
     return this.deletePassword(userToSend);
   }
 
   async createUser(dto: CreateUserDto): Promise<UserForResponse> {
-    const user = this.dbService.createUser(dto);
+    const user = this.dbService.user.create(dto);
     const userToSend = { ...user };
     return this.deletePassword(userToSend);
   }
@@ -39,12 +39,12 @@ export class UserService {
     id: string,
     dto: UpdatePasswordDto,
   ): Promise<UserForResponse> {
-    const user = this.dbService.updateUser(id, dto);
+    const user = this.dbService.user.update(id, dto);
     const userToSend = { ...user };
     return this.deletePassword(userToSend);
   }
 
   async deleteUser(id: string): Promise<void> {
-    return this.dbService.deleteUser(id);
+    return this.dbService.user.delete(id);
   }
 }
