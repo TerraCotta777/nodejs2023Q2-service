@@ -1,3 +1,4 @@
+import { Album, CreateAlbumDto } from 'src/album/album.model';
 import { CreateArtistDto } from './../artist/artist.model';
 import {
   HttpException,
@@ -14,6 +15,7 @@ interface DB {
   users: User[];
   artists: Artist[];
   tracks: Track[];
+  albums: Album[];
 }
 
 @Injectable()
@@ -22,6 +24,7 @@ export class DbService {
     users: [],
     artists: [],
     tracks: [],
+    albums: [],
   };
 
   user = {
@@ -149,6 +152,46 @@ export class DbService {
     delete: (id: string) => {
       const trackIndex = this.track.findTrackIndex(id);
       this.db.tracks.splice(trackIndex, 1);
+      return;
+    },
+  };
+
+  album = {
+    findAll: () => {
+      return this.db.albums;
+    },
+
+    findAlbumIndex: (id: string): number => {
+      const index = this.db.albums.findIndex((album) => album.id === id);
+      if (index === -1) throw new NotFoundException();
+      return index;
+    },
+
+    findById: (id: string) => {
+      const albumIndex = this.album.findAlbumIndex(id);
+      return this.db.albums[albumIndex];
+    },
+
+    create: (dto: CreateAlbumDto) => {
+      const album = {
+        ...dto,
+        id: uuidv4(),
+      };
+      this.db.albums.push(album);
+      return album;
+    },
+
+    update: (id: string, dto: CreateAlbumDto) => {
+      const albumIndex = this.album.findAlbumIndex(id);
+      let album = this.db.albums[albumIndex];
+      album = { id: album.id, ...dto };
+      this.db.albums[albumIndex] = album;
+      return album;
+    },
+
+    delete: (id: string) => {
+      const albumIndex = this.album.findAlbumIndex(id);
+      this.db.albums.splice(albumIndex, 1);
       return;
     },
   };
