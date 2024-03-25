@@ -30,54 +30,54 @@ export class DbService {
     favs: { artists: [], albums: [], tracks: [] },
   };
 
-  user = {
-    findAll: () => {
-      return this.db.users;
-    },
+  // user = {
+  //   findAll: () => {
+  //     return this.db.users;
+  //   },
 
-    findUserIndex: (id: string): number => {
-      const index = this.db.users.findIndex((user: User) => user.id === id);
-      if (index === -1) throw new NotFoundException();
-      return index;
-    },
+  //   findUserIndex: (id: string): number => {
+  //     const index = this.db.users.findIndex((user: User) => user.id === id);
+  //     if (index === -1) throw new NotFoundException();
+  //     return index;
+  //   },
 
-    findById: (id: string) => {
-      const userIndex = this.user.findUserIndex(id);
-      return this.db.users[userIndex];
-    },
+  //   findById: (id: string) => {
+  //     const userIndex = this.user.findUserIndex(id);
+  //     return this.db.users[userIndex];
+  //   },
 
-    create: (dto: CreateUserDto) => {
-      const user = {
-        ...dto,
-        id: uuidv4(),
-        version: 1,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      };
-      this.db.users.push(user);
-      return user;
-    },
+  //   create: (dto: CreateUserDto) => {
+  //     const user = {
+  //       ...dto,
+  //       id: uuidv4(),
+  //       version: 1,
+  //       createdAt: Date.now(),
+  //       updatedAt: Date.now(),
+  //     };
+  //     this.db.users.push(user);
+  //     return user;
+  //   },
 
-    update: (id: string, dto: UpdatePasswordDto) => {
-      const userIndex = this.user.findUserIndex(id);
-      const user = this.db.users[userIndex];
-      if (user.password === dto.oldPassword) {
-        user.version += 1;
-        user.password = dto.newPassword;
-        user.updatedAt = Date.now();
-        this.db.users[userIndex] = user;
-        return user;
-      } else {
-        throw new HttpException('Old password is wrong', HttpStatus.FORBIDDEN);
-      }
-    },
+  //   update: (id: string, dto: UpdatePasswordDto) => {
+  //     const userIndex = this.user.findUserIndex(id);
+  //     const user = this.db.users[userIndex];
+  //     if (user.password === dto.oldPassword) {
+  //       user.version += 1;
+  //       user.password = dto.newPassword;
+  //       user.updatedAt = Date.now();
+  //       this.db.users[userIndex] = user;
+  //       return user;
+  //     } else {
+  //       throw new HttpException('Old password is wrong', HttpStatus.FORBIDDEN);
+  //     }
+  //   },
 
-    delete: (id: string) => {
-      const userIndex = this.user.findUserIndex(id);
-      this.db.users.splice(userIndex, 1);
-      return;
-    },
-  };
+  //   delete: (id: string) => {
+  //     const userIndex = this.user.findUserIndex(id);
+  //     this.db.users.splice(userIndex, 1);
+  //     return;
+  //   },
+  // };
 
   artist = {
     findAll: () => {

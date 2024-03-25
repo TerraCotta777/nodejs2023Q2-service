@@ -9,10 +9,17 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=45683968
+      - POSTGRES_DB=node-service-db
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
       - '5433:5432'
+  app:
+    build: .
+    ports:
+      - '4000:3000'
+    depends_on:
+      - postgres
 
 volumes:
-  postgres:
+  postgres: {}

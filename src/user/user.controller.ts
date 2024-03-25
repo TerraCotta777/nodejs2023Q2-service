@@ -30,6 +30,7 @@ export class UserController {
   @Get('/:id')
   @UsePipes(new ValidationPipe())
   getUser(@Param('id', ParseUUIDPipe) id: string): Promise<UserForResponse> {
+    console.log('first')
     return this.userService.getUser(id);
   }
 
