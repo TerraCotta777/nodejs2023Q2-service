@@ -26,16 +26,15 @@ export class UserService {
   async getUser(id: string): Promise<UserForResponse> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      // select: userWOPassword,
+      select: userWOPassword,
     });
-    console.log(user);
     return user;
   }
 
   async createUser(dto: CreateUserDto): Promise<UserForResponse> {
     const user = await this.prisma.user.create({
       data: dto,
-      // select: userWOPassword,
+      select: userWOPassword,
     });
     return user;
   }
@@ -47,7 +46,7 @@ export class UserService {
     const user = await this.prisma.user.update({
       where: { id },
       data: dto,
-      // select: userWOPassword,
+      select: userWOPassword,
     });
     return user;
   }
