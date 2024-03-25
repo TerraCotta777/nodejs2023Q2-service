@@ -1,28 +1,34 @@
-import { Injectable } from '@nestjs/common';
-import { DbService } from 'src/db/db.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto, Track } from './track.model';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TrackService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(private prisma: PrismaService) {}
 
   async getAllTracks(): Promise<Track[]> {
-    return this.dbService.track.findAll();
+    return await this.prisma.track.findMany();
   }
 
   async getTrack(id: string): Promise<Track> {
-    return this.dbService.track.findById(id);
+    const track = await this.prisma.track.findUnique({ where: { id } });
+    if (!track) throw new NotFoundException('Track was not found');
+    return track;
   }
 
   async createTrack(dto: CreateTrackDto): Promise<Track> {
-    return this.dbService.track.create(dto);
+    return await this.prisma.track.create({ data: dto });
   }
 
   async updateTrack(id: string, dto: CreateTrackDto): Promise<Track> {
-    return this.dbService.track.update(id, dto);
+    const track = await this.prisma.track.update({ where: { id }, data: dto });
+    if (!track) throw new NotFoundException('Track was not found');
+    return track;
   }
 
   async deleteTrack(id: string): Promise<void> {
-    return this.dbService.track.delete(id);
+    const track = this.getTrack(id);
+    if (track) await this.prisma.track.delete({ where: { id } });
+    return;
   }
 }
