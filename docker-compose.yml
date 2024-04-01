@@ -4,6 +4,7 @@ version: '3.8'
 services:
 
   db:
+    container_name: 'db'
     image: postgres:16
     restart: always
     environment:
@@ -16,12 +17,19 @@ services:
       - '5433:5432'
 
   app:
-    restart: always
+    container_name: 'app'
+    restart: on-failure
     build: .
     ports:
       - '4000:4000'
     depends_on:
       - db
+    volumes:
+      - /Users/begaiyma/Desktop/Work/M/nodejs/nodejs2023Q2-service/src:/app/src
 
 volumes:
   postgres:
+
+networks:
+  app-network:
+    driver: bridge

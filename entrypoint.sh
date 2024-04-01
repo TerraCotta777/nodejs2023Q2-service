@@ -2,5 +2,5 @@
 
 npx prisma migrate dev --name "init"
 npx prisma generate
-npm start
+npm run start:dev
 exec "$@"

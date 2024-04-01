@@ -24,12 +24,14 @@ export class ArtistService {
   }
 
   async updateArtist(id: string, dto: CreateArtistDto): Promise<Artist> {
-    const artist = await this.prisma.artist.update({
-      where: { id },
-      data: dto,
-    });
-    if (!artist) throw new NotFoundException('Artist was not found');
-    return artist;
+    try {
+      return await this.prisma.artist.update({
+        where: { id },
+        data: dto,
+      });
+    } catch (error) {
+      throw new NotFoundException('Artist with this id is not found');
+    }
   }
 
   async deleteArtist(id: string): Promise<void> {

@@ -19,35 +19,35 @@ export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
   @Get()
-  getAllArtists(): Promise<Artist[]> {
-    return this.artistService.getAllArtists();
+  async getAllArtists(): Promise<Artist[]> {
+    return await this.artistService.getAllArtists();
   }
 
   @Get('/:id')
   @UsePipes(new ValidationPipe())
-  getArtist(@Param('id', ParseUUIDPipe) id: string): Promise<Artist> {
-    return this.artistService.getArtist(id);
+  async getArtist(@Param('id', ParseUUIDPipe) id: string): Promise<Artist> {
+    return await this.artistService.getArtist(id);
   }
 
   @Post()
   @UsePipes(new ValidationPipe())
-  createArtist(@Body() dto: CreateArtistDto): Promise<Artist> {
-    return this.artistService.createArtist(dto);
+  async createArtist(@Body() dto: CreateArtistDto): Promise<Artist> {
+    return await this.artistService.createArtist(dto);
   }
 
   @Put('/:id')
   @UsePipes(new ValidationPipe())
-  updateArtist(
+  async updateArtist(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreateArtistDto,
   ): Promise<Artist> {
-    return this.artistService.updateArtist(id, dto);
+    return await this.artistService.updateArtist(id, dto);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   @UsePipes(new ValidationPipe())
-  deleteArtist(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.artistService.deleteArtist(id);
+  async deleteArtist(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return await this.artistService.deleteArtist(id);
   }
 }
