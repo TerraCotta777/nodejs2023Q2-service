@@ -11,6 +11,22 @@
 git clone {repository URL}
 ```
 
+## Switching branches
+
+```
+git checkout dev
+```
+
+## Creating .env file
+
+Create .env file in root directory according to .env.example
+
+## Running app in docker multicontainer
+
+```
+docker-compose up --build
+```
+
 ## Installing NPM modules
 
 ```
